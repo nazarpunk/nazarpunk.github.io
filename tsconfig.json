@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "removeComments": true,
+    "module": "None",
+    "target": "ES6",
+    "sourceMap": true,
+    "baseUrl": ".",
+    "alwaysStrict": true,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    ".idea",
+    "node_modules"
+  ]
+}
