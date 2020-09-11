@@ -10,7 +10,7 @@ const autoprefixer             = require(`gulp-autoprefixer`),
       ts                       = require('gulp-typescript'),
       tsProject                = ts.createProject('tsconfig.json'),
       sourcemap                = require('gulp-sourcemaps'),
-      webserver                = require('gulp-webserver'),
+      webserver                = require('gulp-server-io'),
       twig                     = require('gulp-twig'),
       error                    = error => {log(error.toString())};
 
@@ -47,6 +47,7 @@ task(`watch`, cb => {
 	})
 });
 
+task('webserver', () => src([`.`, `!node_modules/**/*`]).pipe(webserver()));
 task(`scss`, () => src([`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`], {base: '.', sourcemaps: true})
 	.pipe(sass())
 	.on(`error`, error)
@@ -63,12 +64,14 @@ task(`ts`, () => tsProject
 	.pipe(dest(file => file.base))
 );
 
-task('webserver', () => src('.')
-	.pipe(webserver({
-		                fallback        : `index.html`,
-		                https           : true,
-		                livereload      : true,
-		                directoryListing: true,
-		                open            : true
-	                }))
+// app-ts
+const appTsProject = ts.createProject('test/vendor/tsconfig.json', {outFile: 'app.js'});
+task(`app-ts`, () => appTsProject
+	.src()
+	.pipe(sourcemap.init())
+	.pipe(tsProject()).js
+	.pipe(sourcemap.write(`.`))
+	.pipe(dest(`test`))
 );
+
+

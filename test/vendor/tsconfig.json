@@ -1,23 +1,20 @@
 {
   "compilerOptions": {
     "strict": true,
+    "module": "none",
     "removeComments": true,
-    "module": "None",
-    "target": "ES6",
+    "target": "es5",
     "sourceMap": true,
-    "baseUrl": ".",
     "alwaysStrict": true,
+    "outFile": "test/vendor",
     "lib": [
       "DOM",
       "DOM.Iterable",
       "ESNext"
     ]
   },
-  "include": [
-    "*.ts"
-  ],
-  "exclude": [
-    ".idea",
-    "node_modules"
+  "files": [
+    "a.ts",
+    "b.ts"
   ]
 }

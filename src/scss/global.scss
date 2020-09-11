@@ -1,1 +1,33 @@
 @import 'normalize';
+
+:root {
+	--body-background : rgb(240, 240, 240);
+	--body-color      : #333333;
+}
+@media (prefers-color-scheme : dark) {
+	:root {
+		--body-background : rgb(25, 25, 25);
+		--body-color      : #cccccc;
+	}
+}
+
+
+html {
+	line-height              : 1.15;
+	height                   : 100%;
+	-webkit-text-size-adjust : 100%;
+}
+
+body {
+	min-height : 100%;
+	margin     : 0;
+}
+
+html, body {
+	color            : var(--body-color);
+	background-color : var(--body-background);
+}
+
+footer {
+
+}

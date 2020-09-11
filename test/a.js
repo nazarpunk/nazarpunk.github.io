@@ -1,7 +1,6 @@
 "use strict";
-const onTransitionEnd = () => { };
-const EventTransitionEndName = `click`;
-document.removeEventListener(EventTransitionEndName, onTransitionEnd, false);
-Promise.resolve().then(() => require(`b`));
+{
+    console.log(`a`);
+}
 
 //# sourceMappingURL=a.js.map
