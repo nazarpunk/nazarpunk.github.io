@@ -1,12 +1,25 @@
 {% include 'part/hat/hat.twig' %}
+{% include 'part/header/header.twig' %}
 
-<nav>
-    Навбар1
-</nav>
+<div class="layout">
+    <main>
+        <input type='checkbox' autocomplete='off'>
+        <input type='checkbox' autocomplete='off' checked>
+        <input type='checkbox' autocomplete='off' disabled>
+        <input type='checkbox' autocomplete='off' checked disabled>
+        <input type='radio' name='a' autocomplete='off'>
+        <input type='radio' name='a' autocomplete='off' checked>
+        <input type='radio' name='b' autocomplete='off' disabled>
+        <input type='radio' name='b' autocomplete='off' checked disabled>
 
-
-Мой проэктик по созданию идеального сайтика)
-
+        <label>
+            <input type='checkbox' autocomplete='off'>Хер
+        </label>
+    </main>
+    <aside>
+        Aside
+    </aside>
+</div>
 
 <footer>
     Футер

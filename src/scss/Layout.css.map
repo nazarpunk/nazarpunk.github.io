@@ -1,0 +1,1 @@
+{"version":3,"sources":["src/scss/Layout.scss"],"names":[],"mappings":"AAAA,QACC,QAAA,YAAA,QAAA,YAAA,QAAA,KACA,mBAAA,WAAA,sBAAA,OAAA,cAAA,IAAA,OAAA,UAAA,IAAA,OAFD,cAAA,aAKE,iBAAA","file":"src/scss/Layout.css","sourcesContent":[".layout {\r\n\tdisplay   : flex;\r\n\tflex-flow : row nowrap;\r\n\r\n\t> main, > aside {\r\n\t\tbackground-color : gray;\r\n\t}\r\n}"]}

@@ -1,0 +1,16 @@
+<header>
+    <link rel="stylesheet" href="/part/header/header.css">
+    <nav class="navbar">
+        <a href="/" class="navbar-link">
+            Link
+        </a>
+        <a href="/" class="navbar-link active">
+            Active Link
+        </a>
+        {% for i in 0..1 %}
+            <a href="#" class="navbar-link">
+                Mega Link
+            </a>
+        {% endfor %}
+    </nav>
+</header>

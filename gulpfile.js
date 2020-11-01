@@ -5,73 +5,44 @@ const autoprefixer             = require(`gulp-autoprefixer`),
       cleanCSS                 = require('gulp-clean-css'),
       uglify                   = require('gulp-uglify-es').default,
       {watch, task, src, dest} = require('gulp'),
-      {log}                    = require(`gulp-util`),
-      fs                       = require('fs'),
       ts                       = require('gulp-typescript'),
-      tsProject                = ts.createProject('tsconfig.json'),
-      sourcemap                = require('gulp-sourcemaps'),
       webserver                = require('gulp-server-io'),
       twig                     = require('gulp-twig'),
-      error                    = error => {log(error.toString())};
+      error                    = error => {log(error.toString())},
+      scss_glob                = [`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`],
+      scss_task                = src => src.pipe(sass())
+                                           .on(`error`, error)
+                                           .pipe(autoprefixer())
+                                           .pipe(cleanCSS())
+                                           .pipe(dest(`.`, {sourcemaps: `.`})),
+      twig_glob                = [`**/*.twig`, `!node_modules/**/*`],
+      twig_task                = () => src(`index.twig`).pipe(twig())
+                                                        .on(`error`, error)
+                                                        .pipe(dest(`.`)),
+      ts_config                = JSON.parse(require('fs').readFileSync(`tsconfig.json`).toString()),
+      ts_glob                  = [`**/*.ts`, `!**/*.d.ts`, `!node_modules/**/*`],
+      ts_task                  = src => src.pipe(ts(ts_config[`compilerOptions`])).on(`error`, error)
+                                           .pipe(uglify()).on(`error`, error)
+                                           .pipe(dest(`.`, {sourcemaps: `.`}));
 
 task(`watch`, cb => {
-	cb(); // callback
-
-	// scss
-	watch([`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`]).on(`change`, path => {
-		log(path);
-		src(path, {base: '.', sourcemaps: true})
-			.pipe(sass())
-			.on(`error`, error)
-			.pipe(autoprefixer())
-			.pipe(cleanCSS())
-			.pipe(dest(`.`, {sourcemaps: `.`}));
-	});
-
-	// ts
-	const tsconfig = JSON.parse(fs.readFileSync(`tsconfig.json`));
-	watch([`**/*.ts`, `!**/*.d.ts`, `!node_modules/**/*`]).on(`change`, path => {
-		log(path);
-		src(path, {base: '.', sourcemaps: true})
-			.pipe(ts(tsconfig.compilerOptions)).on(`error`, error)
-			.pipe(uglify()).on(`error`, error)
-			.pipe(dest(`.`, {sourcemaps: `.`}));
-	});
-
-	// twig
-	watch([`**/*.twig`, `!node_modules/**/*`]).on(`change`, path => {
-		log(path);
-		src(['index.twig'])
-			.pipe(twig()).on(`error`, error)
-			.pipe(dest(`.`));
-	})
+	cb();
+	watch(scss_glob).on(`change`, path => scss_task(src(path, {base: '.', sourcemaps: true})));
+	watch(ts_glob).on(`change`, path => ts_task(src(path, {base: '.', sourcemaps: true})));
+	watch(twig_glob).on(`change`, () => twig_task(src(twig_glob)));
 });
 
-task('webserver', () => src([`.`, `!node_modules/**/*`]).pipe(webserver()));
-task(`scss`, () => src([`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`], {base: '.', sourcemaps: true})
-	.pipe(sass())
-	.on(`error`, error)
-	.pipe(autoprefixer())
-	.pipe(cleanCSS())
-	.pipe(dest(`.`, {sourcemaps: `.`}))
-)
+task('webserver', () => src([`.`, `!node_modules/**/*`, `!.idea/**/*`]).pipe(webserver()));
 
-task(`ts`, () => tsProject
-	.src()
-	.pipe(sourcemap.init())
-	.pipe(tsProject()).js
-	.pipe(sourcemap.write(`.`))
-	.pipe(dest(file => file.base))
-);
-
-// app-ts
-const appTsProject = ts.createProject('test/vendor/tsconfig.json', {outFile: 'app.js'});
-task(`app-ts`, () => appTsProject
-	.src()
-	.pipe(sourcemap.init())
-	.pipe(tsProject()).js
-	.pipe(sourcemap.write(`.`))
-	.pipe(dest(`test`))
-);
-
-
+task(`scss`, cb => {
+	cb();
+	scss_task(src(scss_glob, {base: '.', sourcemaps: true}));
+});
+task(`ts`, cb => {
+	cb();
+	ts_task(src(ts_glob, {base: '.', sourcemaps: true}));
+});
+task(`twig`, cb => {
+	cb();
+	twig_task();
+});

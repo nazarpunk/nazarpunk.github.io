@@ -1,0 +1,8 @@
+.layout {
+	display   : flex;
+	flex-flow : row nowrap;
+
+	> main, > aside {
+		background-color : gray;
+	}
+}
