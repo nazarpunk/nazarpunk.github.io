@@ -3,6 +3,7 @@
 	flex-flow : row nowrap;
 
 	> main, > aside {
-		background-color : gray;
+		background-color : rgb(40, 40, 40);
+		padding          : 1rem;
 	}
 }

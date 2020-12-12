@@ -4,9 +4,10 @@ header {
 .navbar {
 	display          : flex;
 	background-color : var(--navbar-background-color);
-	box-shadow       : 0 0 8px black;
+	border-bottom    : 1px solid black;
 	min-height       : 3rem;
 	margin-bottom    : 1rem;
+	flex-flow        : row nowrap;
 }
 
 .navbar-link {
@@ -21,8 +22,6 @@ header {
 	text-decoration          : none;
 	position                 : relative;
 
-
-	
 	&:focus {outline : none}
 
 	&:hover, &:focus, &.active {--background-color : rgba(0, 0, 0, .2)}
@@ -33,10 +32,10 @@ header {
 		content          : '';
 		display          : block;
 		position         : absolute;
-		height           : 3px;
+		height           : 1px;
 		width            : 100%;
 		background-color : var(--after-background-color);
-		bottom           : -2px;
+		bottom           : -1px;
 		left             : 0;
 	}
 }

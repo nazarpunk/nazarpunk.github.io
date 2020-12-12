@@ -13,6 +13,10 @@
 	}
 }
 
+*, :before, :after {
+	box-sizing : border-box;
+}
+
 html {
 	line-height              : 1.15;
 	height                   : 100%;
@@ -32,8 +36,4 @@ html, body {
 	color            : var(--color);
 	background-color : var(--background-color);
 	font-family      : -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, Noto Sans, sans-serif;
-}
-
-footer {
-	margin-top : auto;
 }

@@ -1,2 +1,2 @@
-.layout{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-flow:row nowrap;flex-flow:row nowrap}.layout>aside,.layout>main{background-color:gray}
+.layout{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-flow:row nowrap;flex-flow:row nowrap}.layout>aside,.layout>main{background-color:#282828;padding:1rem}
 /*# sourceMappingURL=Layout.css.map */
