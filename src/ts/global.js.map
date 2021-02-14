@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"src/ts/global.js","sourcesContent":[]}
+{"version":3,"sources":["src/ts/global.ts"],"names":["console","log"],"mappings":"aACCA,QAAQC,IAAI","file":"src/ts/global.js","sourcesContent":["{\n\tconsole.log(`sfsf111s`);\n\n}"]}
