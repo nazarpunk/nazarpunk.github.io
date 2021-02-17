@@ -3,7 +3,7 @@
   "short_name": "Хороший сайтик",
   "icons": [
     {
-      "src": "/src/ico/google-touch-icon.png",
+      "src": "/public/icon/google-touch-icon.png",
       "sizes": "512x512"
     }
   ],

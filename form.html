@@ -3,10 +3,10 @@
 <head>
 	<meta charset="utf-8">
 
-	{# CSP #}
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-oByu3isyoualNW0NX6KCfG52kLL6eFagsUSOlk5jiUM='">
+	
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-X+zrZv/IbzjZUnhsbWlsecLbwjndTpG0ZynXOif7V+k='">
 
-	{# viewport #}
+	
 	<meta name="viewport" content="width=device-width,shrink-to-fit=no,viewport-fit=cover,initial-scale=1">
 	<meta name="HandheldFriendly" content="true">
 	<meta name="MobileOptimized" content="width">
@@ -17,19 +17,24 @@
 	<link rel="mask-icon" href="/public/icon/mask-icon.svg" color="#000000">
 	<link rel="apple-touch-icon" href="/public/icon/apple-touch-icon.png">
 
-	{# colors #}
+	
 	<meta name="theme-color" content="#000">
 
-	{# manifest #}
-	<link rel="manifest" href="/manifest.json">
+	
+	<link rel="manifest" href="/webmanifest.json">
 
-	{# title #}
+	
+	<link rel="stylesheet" href="/src/scss/Root.css">
+	<link rel="stylesheet" href="/src/scss/Layout.css">
+	<script type="text/javascript" src="/src/ts/global.js"></script>
+
+	
 	<title>Хороший Сайтик</title>
 	<meta name="description" content="Попытка создания современного сайтика">
-
-	{% block css %}{% endblock %}
 </head>
 <body>
-{% block body %}{% endblock %}
+	form
+
+
 </body>
 </html>

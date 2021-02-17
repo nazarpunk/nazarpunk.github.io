@@ -5,7 +5,7 @@ const autoprefixer             = require(`gulp-autoprefixer`),
       cleanCSS                 = require('gulp-clean-css'),
       uglify                   = require('gulp-uglify-es').default,
       {watch, task, src, dest} = require('gulp'),
-      {yellow,gray}                 = require(`colors/safe`),
+      {yellow, gray, magenta}  = require(`colors/safe`),
       ts                       = require('gulp-typescript'),
       twig                     = require('gulp-twig'),
       error                    = error => console.log(yellow(error.toString())),
@@ -14,16 +14,18 @@ const autoprefixer             = require(`gulp-autoprefixer`),
                                            .pipe(autoprefixer())
                                            .pipe(cleanCSS())
                                            .pipe(dest(`.`, {sourcemaps: `.`})),
-      twig_glob                = [`**/*.twig`, `!node_modules/**/*`],
-      twig_task                = () => src(`index.twig`).pipe(twig())
-                                                        .on(`error`, error)
-                                                        .pipe(dest(`.`)),
+      twig_glob                = [`template/page/**/*.twig`, `!node_modules/**/*`],
+      twig_task                = src => src.pipe(twig({
+	                                                      errorLogToConsole: true
+                                                      }))
+                                           .pipe(dest(`.`)),
       ts_glob                  = [`**/*.ts`, `!**/*.d.ts`, `!node_modules/**/*`],
       ts_task                  = src => src.pipe(ts.createProject('tsconfig.json')())
                                            .on(`error`, error)
                                            .pipe(uglify()).on(`error`, error)
                                            .pipe(dest(`.`, {sourcemaps: `.`})),
       browser_sync             = require('browser-sync').create();
+
 
 task(`watch`, cb => {
 	cb();
@@ -37,16 +39,19 @@ task(`watch`, cb => {
 	});
 	watch(twig_glob).on(`change`, path => {
 		console.log(gray(path));
-		twig_task(src(twig_glob))
+		twig_task(src(path))
 	});
-});
 
-task('browser-sync', () => {
 	browser_sync.init({
 		                  server: {
 			                  baseDir: `./`
 		                  }
 	                  });
+
+	watch('**/*.{html,css,js}').on(`change`, path => {
+		console.log(magenta(path));
+		browser_sync.reload();
+	});
 });
 
 
