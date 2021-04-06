@@ -8,6 +8,9 @@
     "> 5%",
     "last 5 versions"
   ],
+  "dependencies": {
+    "comet-ts": "latest"
+  },
   "devDependencies": {
     "browser-sync": "latest",
     "colors": "latest",

@@ -1,12 +1,21 @@
 {
   "compilerOptions": {
     "strict": true,
-    "removeComments": true,
-    "module": "None",
-    "target": "ES6",
-    "sourceMap": true,
-    "baseUrl": ".",
     "alwaysStrict": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "module": "ES6",
+    "target": "ES6",
+    "baseUrl": ".",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "/*": ["./*"]
+    },
     "lib": [
       "DOM",
       "DOM.Iterable",

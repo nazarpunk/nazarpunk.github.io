@@ -19,7 +19,14 @@ const autoprefixer             = require(`gulp-autoprefixer`),
 	                                                      errorLogToConsole: true
                                                       }))
                                            .pipe(dest(`.`)),
-      ts_glob                  = [`**/*.ts`, `!**/*.d.ts`, `!node_modules/**/*`],
+      ts_script      = [
+	      `**/*.ts`,
+	      `!**/*.d.ts`,
+	      `!node_modules/**/*`
+      ],
+      ts_module      = [
+	      `node_modules/comet-ts/index.ts`
+      ],
       ts_task                  = src => src.pipe(ts.createProject('tsconfig.json')())
                                            .on(`error`, error)
                                            .pipe(uglify()).on(`error`, error)
@@ -33,7 +40,7 @@ task(`watch`, cb => {
 		console.log(gray(path));
 		scss_task(src(path, {base: `.`, sourcemaps: true}));
 	});
-	watch(ts_glob).on(`change`, path => {
+	watch(ts_script).on(`change`, path => {
 		console.log(gray(path));
 		ts_task(src(path, {base: `.`, sourcemaps: true}));
 	});
@@ -60,8 +67,10 @@ task(`scss`, cb => {
 	scss_task(src(scss_glob, {base: '.', sourcemaps: true}));
 });
 task(`ts`, cb => {
-	cb();
-	ts_task(src(ts_glob, {base: '.', sourcemaps: true}));
+	src(ts_module, {
+		base: `./node_modules/`
+	}).pipe(dest(`./public/module/`, {base: `.`}));
+	ts_task(src(ts_script.concat(ts_module), {base: `.`, sourcemaps: true})).on(`end`, cb);
 });
 task(`twig`, cb => {
 	cb();
