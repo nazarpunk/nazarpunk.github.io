@@ -19,12 +19,12 @@ const autoprefixer             = require(`gulp-autoprefixer`),
 	                                                      errorLogToConsole: true
                                                       }))
                                            .pipe(dest(`.`)),
-      ts_script      = [
+      ts_script                = [
 	      `**/*.ts`,
 	      `!**/*.d.ts`,
 	      `!node_modules/**/*`
       ],
-      ts_module      = [
+      ts_module                = [
 	      `node_modules/comet-ts/index.ts`
       ],
       ts_task                  = src => src.pipe(ts.createProject('tsconfig.json')())
@@ -36,18 +36,18 @@ const autoprefixer             = require(`gulp-autoprefixer`),
 
 task(`watch`, cb => {
 	cb();
-	watch(scss_glob).on(`change`, path => {
-		console.log(gray(path));
-		scss_task(src(path, {base: `.`, sourcemaps: true}));
-	});
-	watch(ts_script).on(`change`, path => {
-		console.log(gray(path));
-		ts_task(src(path, {base: `.`, sourcemaps: true}));
-	});
-	watch(twig_glob).on(`change`, path => {
-		console.log(gray(path));
-		twig_task(src(path))
-	});
+
+	watch(scss_glob).on(`change`, path => scss_task(src(path, {
+		base      : `.`,
+		sourcemaps: true
+	})).on(`end`, () => console.log(gray(path))));
+
+	watch(ts_script).on(`change`, path => ts_task(src(path, {
+		base      : `.`,
+		sourcemaps: true
+	})).on(`end`, () => console.log(gray(path))));
+
+	watch(twig_glob).on(`change`, path => twig_task(src(path)).on(`end`, () => console.log(gray(path))));
 
 	browser_sync.init({
 		                  server: {
@@ -62,17 +62,11 @@ task(`watch`, cb => {
 });
 
 
-task(`scss`, cb => {
-	cb();
-	scss_task(src(scss_glob, {base: '.', sourcemaps: true}));
-});
-task(`ts`, cb => {
+task(`scss`, cb => scss_task(src(scss_glob, {base: '.', sourcemaps: true})).on(`end`, cb));
+task(`ts`, cb => ts_task(src(ts_script.concat(ts_module), {base: `.`, sourcemaps: true})).on(`end`, cb));
+task(`twig`, cb => twig_task().on(`end`, cb));
+
+task(`dependency`, cb =>
 	src(ts_module, {
 		base: `./node_modules/`
-	}).pipe(dest(`./public/module/`, {base: `.`}));
-	ts_task(src(ts_script.concat(ts_module), {base: `.`, sourcemaps: true})).on(`end`, cb);
-});
-task(`twig`, cb => {
-	cb();
-	twig_task();
-});
+	}).pipe(dest(`./public/module/`, {base: `.`})).on(`end`, cb));
