@@ -1,9 +1,5 @@
 {
-  "name": "nazarpunk.github.io",
-  "version": "1.0.0",
-  "private": false,
   "author": "nazarpunk",
-  "license": "MIT",
   "browserslist": [
     "> 5%",
     "last 5 versions"
@@ -12,17 +8,22 @@
     "comet-ts": "latest"
   },
   "devDependencies": {
-    "browser-sync": "latest",
+    "browser-sync": "^2.27.5",
     "colors": "latest",
-    "gulp": "latest",
-    "gulp-autoprefixer": "latest",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
     "gulp-clean-css": "latest",
     "gulp-concat": "latest",
-    "gulp-sass": "latest",
+    "gulp-sass": "^5.0.0",
     "gulp-sourcemaps": "latest",
     "gulp-twig": "latest",
-    "gulp-typescript": "latest",
-    "gulp-uglify-es": "latest",
-    "typescript": "latest"
-  }
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-uglify-es": "^3.0.0",
+    "sass": "^1.37.5",
+    "typescript": "^4.4.2"
+  },
+  "license": "MIT",
+  "name": "nazarpunk.github.io",
+  "private": false,
+  "version": "1.0.0"
 }

@@ -1,37 +1,39 @@
 'use strict';
 
-const autoprefixer             = require(`gulp-autoprefixer`),
-      sass                     = require(`gulp-sass`),
-      cleanCSS                 = require('gulp-clean-css'),
-      uglify                   = require('gulp-uglify-es').default,
-      {watch, task, src, dest} = require('gulp'),
-      {yellow, gray, magenta}  = require(`colors/safe`),
-      ts                       = require('gulp-typescript'),
-      twig                     = require('gulp-twig'),
-      error                    = error => console.log(yellow(error.toString())),
-      scss_glob                = [`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`],
-      scss_task                = src => src.pipe(sass().on('error', sass.logError))
-                                           .pipe(autoprefixer())
-                                           .pipe(cleanCSS())
-                                           .pipe(dest(`.`, {sourcemaps: `.`})),
-      twig_glob                = [`template/page/**/*.twig`, `!node_modules/**/*`],
-      twig_task                = src => src.pipe(twig({
-	                                                      errorLogToConsole: true
-                                                      }))
-                                           .pipe(dest(`.`)),
-      ts_script                = [
+// TODO Remove Twig
+
+const {watch, task, src, dest} = require('gulp');
+const {yellow, gray, magenta} = require(`colors/safe`);
+const autoprefixer = require(`gulp-autoprefixer`),
+      sass         = require('gulp-sass')(require('sass')),
+      cleanCSS     = require('gulp-clean-css'),
+      uglify       = require('gulp-uglify-es').default,
+      ts           = require('gulp-typescript'),
+      twig         = require('gulp-twig'),
+      error        = error => console.log(yellow(error.toString())),
+      scss_glob    = [`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`],
+      scss_task    = src => src.pipe(sass().on('error', sass.logError))
+                               .pipe(autoprefixer())
+                               .pipe(cleanCSS())
+                               .pipe(dest(`.`, {sourcemaps: `.`})),
+      twig_glob    = [`template/page/**/*.twig`, `!node_modules/**/*`],
+      twig_task    = src => src.pipe(twig({
+	                                          errorLogToConsole: true
+                                          }))
+                               .pipe(dest(`.`)),
+      ts_script    = [
 	      `**/*.ts`,
 	      `!**/*.d.ts`,
 	      `!node_modules/**/*`
       ],
-      ts_module                = [
+      ts_module    = [
 	      `node_modules/comet-ts/index.ts`
       ],
-      ts_task                  = src => src.pipe(ts.createProject('tsconfig.json')())
-                                           .on(`error`, error)
-                                           .pipe(uglify()).on(`error`, error)
-                                           .pipe(dest(`.`, {sourcemaps: `.`})),
-      browser_sync             = require('browser-sync').create();
+      ts_task      = src => src.pipe(ts.createProject('tsconfig.json')())
+                               .on(`error`, error)
+                               .pipe(uglify()).on(`error`, error)
+                               .pipe(dest(`.`, {sourcemaps: `.`})),
+      browser_sync = require('browser-sync').create();
 
 
 task(`watch`, cb => {
