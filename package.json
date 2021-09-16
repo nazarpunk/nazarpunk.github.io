@@ -19,8 +19,8 @@
     "gulp-twig": "latest",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify-es": "^3.0.0",
-    "sass": "^1.38.2",
-    "typescript": "^4.4.2"
+    "sass": "^1.41.0",
+    "typescript": "^4.4.3"
   },
   "license": "MIT",
   "name": "nazarpunk.github.io",
