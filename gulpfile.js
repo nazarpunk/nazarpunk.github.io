@@ -1,7 +1,5 @@
 'use strict';
 
-// TODO Remove Twig
-
 const {watch, task, src, dest} = require('gulp');
 const {yellow, gray, magenta} = require(`colors/safe`);
 const autoprefixer = require(`gulp-autoprefixer`),
@@ -9,18 +7,12 @@ const autoprefixer = require(`gulp-autoprefixer`),
       cleanCSS     = require('gulp-clean-css'),
       uglify       = require('gulp-uglify-es').default,
       ts           = require('gulp-typescript'),
-      twig         = require('gulp-twig'),
       error        = error => console.log(yellow(error.toString())),
       scss_glob    = [`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`],
       scss_task    = src => src.pipe(sass().on('error', sass.logError))
                                .pipe(autoprefixer())
                                .pipe(cleanCSS())
                                .pipe(dest(`.`, {sourcemaps: `.`})),
-      twig_glob    = [`template/page/**/*.twig`, `!node_modules/**/*`],
-      twig_task    = src => src.pipe(twig({
-	                                          errorLogToConsole: true
-                                          }))
-                               .pipe(dest(`.`)),
       ts_script    = [
 	      `**/*.ts`,
 	      `!**/*.d.ts`,
@@ -49,8 +41,6 @@ task(`watch`, cb => {
 		sourcemaps: true
 	})).on(`end`, () => console.log(gray(path))));
 
-	watch(twig_glob).on(`change`, path => twig_task(src(path)).on(`end`, () => console.log(gray(path))));
-
 	browser_sync.init({
 		                  server: {
 			                  baseDir: `./`
@@ -66,7 +56,6 @@ task(`watch`, cb => {
 
 task(`scss`, cb => scss_task(src(scss_glob, {base: '.', sourcemaps: true})).on(`end`, cb));
 task(`ts`, cb => ts_task(src(ts_script.concat(ts_module), {base: `.`, sourcemaps: true})).on(`end`, cb));
-task(`twig`, cb => twig_task().on(`end`, cb));
 
 task(`dependency`, cb =>
 	src(ts_module, {
