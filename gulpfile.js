@@ -1,13 +1,12 @@
 'use strict';
 
 const {watch, task, src, dest} = require('gulp');
-const {yellow, gray, magenta} = require(`colors/safe`);
 const autoprefixer = require(`gulp-autoprefixer`),
       sass         = require('gulp-sass')(require('sass')),
       cleanCSS     = require('gulp-clean-css'),
       uglify       = require('gulp-uglify-es').default,
       ts           = require('gulp-typescript'),
-      error        = error => console.log(yellow(error.toString())),
+      error        = error => console.log(error.toString()),
       scss_glob    = [`**/*.scss`, `!**/_*.scss`, `!node_modules/**/*`],
       scss_task    = src => src.pipe(sass().on('error', sass.logError))
                                .pipe(autoprefixer())
@@ -34,12 +33,12 @@ task(`watch`, cb => {
 	watch(scss_glob).on(`change`, path => scss_task(src(path, {
 		base      : `.`,
 		sourcemaps: true
-	})).on(`end`, () => console.log(gray(path))));
+	})).on(`end`, () => console.log(path)));
 
 	watch(ts_script).on(`change`, path => ts_task(src(path, {
 		base      : `.`,
 		sourcemaps: true
-	})).on(`end`, () => console.log(gray(path))));
+	})).on(`end`, () => console.log(path)));
 
 	browser_sync.init({
 		                  server: {
@@ -48,7 +47,7 @@ task(`watch`, cb => {
 	                  });
 
 	watch('**/*.{html,css,js}').on(`change`, path => {
-		console.log(magenta(path));
+		console.log(path);
 		browser_sync.reload();
 	});
 });
