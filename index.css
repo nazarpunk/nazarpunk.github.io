@@ -1,0 +1,2 @@
+body{margin:0}div{width:600px;height:20px;background-color:red}@media (min-width:600.99px){div{background-color:green}}@media (max-width:601px){div{background-color:#00f}}
+/*# sourceMappingURL=index.css.map */

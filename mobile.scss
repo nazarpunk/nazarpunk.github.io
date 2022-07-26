@@ -1,0 +1,38 @@
+$desktop-screen-min-width: 640.99px;
+$mobile-screen-max-width: 641px;
+$tablet-screen-max-width: 834.99px;
+$no-tablet-screen-min-width: 835px;
+
+@media (max-width:$desktop-screen-min-width)  {
+    /* MOBILE */
+    .xgm-beta .desktop-only {
+        display: none !important;
+    }
+}
+@media (min-width:$mobile-screen-max-width) and (orientation:landscape)  {
+    /* DESKTOP NARROW */
+    .xgm-beta .mobile-only {
+        display: none !important;
+    }
+}
+@media (min-width:$mobile-screen-max-width) and (max-width:$tablet-screen-max-width) and (orientation:portrait) {
+    /* TABLET NARROW */
+    .xgm-beta .desktop-only {
+        display: none !important;
+    }
+}
+@media (min-width:$no-tablet-screen-min-width) {
+    /* DESKTOP AND TABLET WIDE */
+    .xgm-beta .mobile-only {
+        display: none !important;
+    }
+}
+
+@import 'mobile/Header';
+@import 'mobile/Body';
+
+.xgm-stable {
+    .mobile-only {
+        display: none !important;
+    }
+}
