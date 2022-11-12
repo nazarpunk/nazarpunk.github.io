@@ -1,1 +1,0 @@
-{"version":3,"sources":["public/ts/app.ts"],"names":["Comet","test"],"mappings":"OAAQA,UAAoB,mCAE5BA,MAAMC,KAAK","file":"public/ts/app.js","sourcesContent":["import {Comet}         from '/public/module/comet-ts/index.js';\n\nComet.test(`s`);\n\n"]}
