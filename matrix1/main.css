@@ -4,14 +4,17 @@ body {
 
 .wrap {
 	position: absolute;
-	top: 20px;
 	left: 90px;
 	width: 160px;
 	height: 106px;
 	background-color: gray;
 }
 
-.wrap:nth-child(2) {
+.wrap.a {
+	top: 20px;
+}
+
+.wrap.b {
 	top: 240px;
 }
 
