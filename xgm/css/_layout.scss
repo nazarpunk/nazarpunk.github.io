@@ -1,0 +1,26 @@
+html {
+	height: 100%;
+}
+
+body {
+	font-family: Verdana, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: var(--font-size);
+	line-height: var(--line-height);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	flex: 1;
+	padding: 1rem;
+	background: var(--background);
+	color: var(--color);
+}
+
+p {
+	margin-bottom: 1rem;
+}

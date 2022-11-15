@@ -1,0 +1,16 @@
+.button {
+	font-family: Verdana, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: var(--font-size);
+	line-height: 1;
+	display: inline-block;
+	box-sizing: border-box;
+	margin: 0;
+	padding: .3rem .6rem;
+	text-align: center;
+	border: 0;
+	background-color: red;
+
+	&:hover {
+		cursor: pointer;
+	}
+}
