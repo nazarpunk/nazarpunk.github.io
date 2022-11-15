@@ -1,4 +1,4 @@
-import {Hsluv} from "./hsluv.mjs";
+import {CUtil} from "./CUtil.mjs";
 
 const light = document.querySelector('.container');
 
@@ -29,15 +29,15 @@ const theme = {
 const getContrastRatio = (a, b) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
 
 const setVar = (container, name, value) => {
-	const a = new Hsluv();
+	const a = new CUtil();
 	a.hex(value);
 	container.style.setProperty(`--${name}`, value);
 
 	switch (name) {
 		case 'background':
-			const b = (new Hsluv()).hex(a.hsluv.hex());
+			const b = (new CUtil()).hex(a.hsluv.hex());
 
-			b.hsluv.modify(null, null, b.hsluv.l > 50 ? -75 : 75);
+			b.hsluv.modify(null, null, b.hsluv.l > 80 ? -60 : 60);
 
 			const div = container.querySelector('.background-text');
 			div.innerHTML = `l: ${b.hsluv.l}`;
@@ -49,12 +49,15 @@ const setVar = (container, name, value) => {
 
 			container.style.setProperty('--color', b.hsluv.hex());
 
-			const c = (new Hsluv()).hex(b.hsluv.hex());
+			const c = (new CUtil()).hex(b.hsluv.hex());
 
 			c.hsluv.modify(null, null, -40);
 
 			const mcr = getContrastRatio(a.rgb.luminance(), c.rgb.luminance());
 			div.innerHTML += `<br>Muted contrast ratio: ${mcr.toFixed(3)}`;
+
+			div.innerHTML += `<br>${a.hsluv.h.toFixed(3)} | ${a.hsluv.s.toFixed(3)} | ${a.hsluv.l.toFixed(3)}`;
+			div.innerHTML += `<br>${a.hsl.h.toFixed(3)} | ${a.hsl.s.toFixed(3)} | ${a.hsl.l.toFixed(3)}`;
 
 			container.style.setProperty('--color-muted', c.hsluv.hex());
 
