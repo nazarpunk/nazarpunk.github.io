@@ -3,7 +3,7 @@ html {
 }
 
 body {
-	font-family: Verdana, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: Verdana, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: var(--font-size);
 	line-height: var(--line-height);
 	display: flex;
@@ -14,6 +14,14 @@ body {
 	padding: 0;
 }
 
+pre {
+	font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+p {
+	margin-bottom: 1rem;
+}
+
 .container {
 	flex: 1;
 	padding: 1rem;
@@ -21,6 +29,6 @@ body {
 	color: var(--color);
 }
 
-p {
-	margin-bottom: 1rem;
+.muted {
+	color: var(--color-muted);
 }

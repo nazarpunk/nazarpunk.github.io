@@ -44,80 +44,56 @@ const distanceFromOriginAngle = (slope, intercept, angle) => {
 };
 
 export class Hsluv {
-	// RGB
 	/**
 	 * @private
 	 * @type {string}
 	 */
 	_hex = '#000000';
-	rgb_r = 0;
-	rgb_g = 0;
-	rgb_b = 0;
-	// CIE XYZ
-	xyz_x = 0;
-	xyz_y = 0;
-	xyz_z = 0;
-	// CIE LUV
-	luv_l = 0;
-	luv_u = 0;
-	luv_v = 0;
-	// CIE LUV LCh
-	lch_l = 0;
-	lch_c = 0;
-	lch_h = 0;
-	/**
-	 * HSLuv
-	 * @type {Hsl}
-	 */
-	hsluv;
-	// HPLuv
-	hpluv_h = 0;
-	hpluv_p = 0;
-	hpluv_l = 0;
-	// 6 lines in slope-intercept format: R < 0, R > 1, G < 0, G > 1, B < 0, B > 1
-	r0s = 0;
-	r0i = 0;
-	r1s = 0;
-	r1i = 0;
-	g0s = 0;
-	g0i = 0;
-	g1s = 0;
-	g1i = 0;
-	b0s = 0;
-	b0i = 0;
-	b1s = 0;
-	b1i = 0;
+
+	/** @type {Hsl} */ hsluv;
+	/** @type {Hpl} */ hpluv;
+	/** @type {Rgb} */ rgb;
+	/** @type {Rgb24} */ rgb24;
+	/** @type {Xyz} */ xyz;
+	/** @type {Luv} */ luv;
+	/** @type {Lch} */ lch;
 
 	constructor() {
 		this.hsluv = new Hsl(this);
+		this.hpluv = new Hpl(this);
+		this.rgb = new Rgb(this);
+		this.rgb24 = new Rgb24(this);
+		this.xyz = new Xyz(this);
+		this.luv = new Luv(this);
+		this.lch = new Lch(this);
 	}
 
 	rgbToHex() {
 		this._hex = "#";
-		this._hex += rgbChannelToHex(this.rgb_r);
-		this._hex += rgbChannelToHex(this.rgb_g);
-		this._hex += rgbChannelToHex(this.rgb_b);
+		this._hex += rgbChannelToHex(this.rgb.r);
+		this._hex += rgbChannelToHex(this.rgb.g);
+		this._hex += rgbChannelToHex(this.rgb.b);
 	}
 
 	xyzToRgb() {
-		this.rgb_r = fromLinear(m_r0 * this.xyz_x + m_r1 * this.xyz_y + m_r2 * this.xyz_z);
-		this.rgb_g = fromLinear(m_g0 * this.xyz_x + m_g1 * this.xyz_y + m_g2 * this.xyz_z);
-		this.rgb_b = fromLinear(m_b0 * this.xyz_x + m_b1 * this.xyz_y + m_b2 * this.xyz_z);
+		this.rgb.r = fromLinear(m_r0 * this.xyz.x + m_r1 * this.xyz.y + m_r2 * this.xyz.z);
+		this.rgb.g = fromLinear(m_g0 * this.xyz.x + m_g1 * this.xyz.y + m_g2 * this.xyz.z);
+		this.rgb.b = fromLinear(m_b0 * this.xyz.x + m_b1 * this.xyz.y + m_b2 * this.xyz.z);
 	}
 
 	rgbToXyz() {
-		const lr = toLinear(this.rgb_r);
-		const lg = toLinear(this.rgb_g);
-		const lb = toLinear(this.rgb_b);
-		this.xyz_x = 0.41239079926595 * lr + 0.35758433938387 * lg + 0.18048078840183 * lb;
-		this.xyz_y = 0.21263900587151 * lr + 0.71516867876775 * lg + 0.072192315360733 * lb;
-		this.xyz_z = 0.019330818715591 * lr + 0.11919477979462 * lg + 0.95053215224966 * lb;
+		const lr = toLinear(this.rgb.r);
+		const lg = toLinear(this.rgb.g);
+		const lb = toLinear(this.rgb.b);
+		this.xyz.x = 0.41239079926595 * lr + 0.35758433938387 * lg + 0.18048078840183 * lb;
+		this.xyz.y = 0.21263900587151 * lr + 0.71516867876775 * lg + 0.072192315360733 * lb;
+		this.xyz.z = 0.019330818715591 * lr + 0.11919477979462 * lg + 0.95053215224966 * lb;
 	}
 
 	xyzToLuv() {
-		const divider = this.xyz_x + 15 * this.xyz_y + 3 * this.xyz_z;
-		let varU = 4 * this.xyz_x;
-		let varV = 9 * this.xyz_y;
+		const divider = this.xyz.x + 15 * this.xyz.y + 3 * this.xyz.z;
+		let varU = 4 * this.xyz.x;
+		let varV = 9 * this.xyz.y;
 		if (divider !== 0) {
 			varU /= divider;
 			varV /= divider;
@@ -125,49 +101,49 @@ export class Hsluv {
 			varU = NaN;
 			varV = NaN;
 		}
-		this.luv_l = yToL(this.xyz_y);
-		if (this.luv_l === 0) {
-			this.luv_u = 0;
-			this.luv_v = 0;
+		this.luv.l = yToL(this.xyz.y);
+		if (this.luv.l === 0) {
+			this.luv.u = 0;
+			this.luv.v = 0;
 		} else {
-			this.luv_u = 13 * this.luv_l * (varU - refU);
-			this.luv_v = 13 * this.luv_l * (varV - refV);
+			this.luv.u = 13 * this.luv.l * (varU - refU);
+			this.luv.v = 13 * this.luv.l * (varV - refV);
 		}
 	}
 
 	luvToXyz() {
-		if (this.luv_l === 0) {
-			this.xyz_x = 0;
-			this.xyz_y = 0;
-			this.xyz_z = 0;
+		if (this.luv.l === 0) {
+			this.xyz.x = 0;
+			this.xyz.y = 0;
+			this.xyz.z = 0;
 			return;
 		}
-		const varU = this.luv_u / (13 * this.luv_l) + refU;
-		const varV = this.luv_v / (13 * this.luv_l) + refV;
-		this.xyz_y = lToY(this.luv_l);
-		this.xyz_x = 0 - 9 * this.xyz_y * varU / ((varU - 4) * varV - varU * varV);
-		this.xyz_z = (9 * this.xyz_y - 15 * varV * this.xyz_y - varV * this.xyz_x) / (3 * varV);
+		const varU = this.luv.u / (13 * this.luv.l) + refU;
+		const varV = this.luv.v / (13 * this.luv.l) + refV;
+		this.xyz.y = lToY(this.luv.l);
+		this.xyz.x = 0 - 9 * this.xyz.y * varU / ((varU - 4) * varV - varU * varV);
+		this.xyz.z = (9 * this.xyz.y - 15 * varV * this.xyz.y - varV * this.xyz.x) / (3 * varV);
 	}
 
 	luvToLch() {
-		this.lch_l = this.luv_l;
-		this.lch_c = Math.sqrt(this.luv_u * this.luv_u + this.luv_v * this.luv_v);
-		if (this.lch_c < 0.00000001) {
-			this.lch_h = 0;
+		this.lch.l = this.luv.l;
+		this.lch.c = Math.sqrt(this.luv.u * this.luv.u + this.luv.v * this.luv.v);
+		if (this.lch.c < 0.00000001) {
+			this.lch.h = 0;
 		} else {
-			const hrad = Math.atan2(this.luv_v, this.luv_u);
-			this.lch_h = hrad * 180.0 / Math.PI;
-			if (this.lch_h < 0) {
-				this.lch_h = 360 + this.lch_h;
+			const hrad = Math.atan2(this.luv.v, this.luv.u);
+			this.lch.h = hrad * 180.0 / Math.PI;
+			if (this.lch.h < 0) {
+				this.lch.h = 360 + this.lch.h;
 			}
 		}
 	}
 
 	lchToLuv() {
-		const hrad = this.lch_h / 180.0 * Math.PI;
-		this.luv_l = this.lch_l;
-		this.luv_u = Math.cos(hrad) * this.lch_c;
-		this.luv_v = Math.sin(hrad) * this.lch_c;
+		const hrad = this.lch.h / 180.0 * Math.PI;
+		this.luv.l = this.lch.l;
+		this.luv.u = Math.cos(hrad) * this.lch.c;
+		this.luv.v = Math.sin(hrad) * this.lch.c;
 	}
 
 	calculateBoundingLines(l) {
@@ -182,103 +158,103 @@ export class Hsluv {
 		const s1b = sub2 * (284517 * m_b0 - 94839 * m_b2);
 		const s2b = sub2 * (838422 * m_b2 + 769860 * m_b1 + 731718 * m_b0);
 		const s3b = sub2 * (632260 * m_b2 - 126452 * m_b1);
-		this.r0s = s1r / s3r;
-		this.r0i = s2r * l / s3r;
-		this.r1s = s1r / (s3r + 126452);
-		this.r1i = (s2r - 769860) * l / (s3r + 126452);
-		this.g0s = s1g / s3g;
-		this.g0i = s2g * l / s3g;
-		this.g1s = s1g / (s3g + 126452);
-		this.g1i = (s2g - 769860) * l / (s3g + 126452);
-		this.b0s = s1b / s3b;
-		this.b0i = s2b * l / s3b;
-		this.b1s = s1b / (s3b + 126452);
-		this.b1i = (s2b - 769860) * l / (s3b + 126452);
+		this.rgb24.r0s = s1r / s3r;
+		this.rgb24.r0i = s2r * l / s3r;
+		this.rgb24.r1s = s1r / (s3r + 126452);
+		this.rgb24.r1i = (s2r - 769860) * l / (s3r + 126452);
+		this.rgb24.g0s = s1g / s3g;
+		this.rgb24.g0i = s2g * l / s3g;
+		this.rgb24.g1s = s1g / (s3g + 126452);
+		this.rgb24.g1i = (s2g - 769860) * l / (s3g + 126452);
+		this.rgb24.b0s = s1b / s3b;
+		this.rgb24.b0i = s2b * l / s3b;
+		this.rgb24.b1s = s1b / (s3b + 126452);
+		this.rgb24.b1i = (s2b - 769860) * l / (s3b + 126452);
 	}
 
 	calcMaxChromaHpluv() {
-		const r0 = distanceFromOrigin(this.r0s, this.r0i);
-		const r1 = distanceFromOrigin(this.r1s, this.r1i);
-		const g0 = distanceFromOrigin(this.g0s, this.g0i);
-		const g1 = distanceFromOrigin(this.g1s, this.g1i);
-		const b0 = distanceFromOrigin(this.b0s, this.b0i);
-		const b1 = distanceFromOrigin(this.b1s, this.b1i);
+		const r0 = distanceFromOrigin(this.rgb24.r0s, this.rgb24.r0i);
+		const r1 = distanceFromOrigin(this.rgb24.r1s, this.rgb24.r1i);
+		const g0 = distanceFromOrigin(this.rgb24.g0s, this.rgb24.g0i);
+		const g1 = distanceFromOrigin(this.rgb24.g1s, this.rgb24.g1i);
+		const b0 = distanceFromOrigin(this.rgb24.b0s, this.rgb24.b0i);
+		const b1 = distanceFromOrigin(this.rgb24.b1s, this.rgb24.b1i);
 		return min6(r0, r1, g0, g1, b0, b1);
 	}
 
 	calcMaxChromaHsluv(h) {
 		const hueRad = h / 360 * Math.PI * 2;
-		const r0 = distanceFromOriginAngle(this.r0s, this.r0i, hueRad);
-		const r1 = distanceFromOriginAngle(this.r1s, this.r1i, hueRad);
-		const g0 = distanceFromOriginAngle(this.g0s, this.g0i, hueRad);
-		const g1 = distanceFromOriginAngle(this.g1s, this.g1i, hueRad);
-		const b0 = distanceFromOriginAngle(this.b0s, this.b0i, hueRad);
-		const b1 = distanceFromOriginAngle(this.b1s, this.b1i, hueRad);
+		const r0 = distanceFromOriginAngle(this.rgb24.r0s, this.rgb24.r0i, hueRad);
+		const r1 = distanceFromOriginAngle(this.rgb24.r1s, this.rgb24.r1i, hueRad);
+		const g0 = distanceFromOriginAngle(this.rgb24.g0s, this.rgb24.g0i, hueRad);
+		const g1 = distanceFromOriginAngle(this.rgb24.g1s, this.rgb24.g1i, hueRad);
+		const b0 = distanceFromOriginAngle(this.rgb24.b0s, this.rgb24.b0i, hueRad);
+		const b1 = distanceFromOriginAngle(this.rgb24.b1s, this.rgb24.b1i, hueRad);
 		return min6(r0, r1, g0, g1, b0, b1);
 	}
 
 	hsluvToLch() {
 		if (this.hsluv.l > 99.9999999) {
-			this.lch_l = 100;
-			this.lch_c = 0;
+			this.lch.l = 100;
+			this.lch.c = 0;
 		} else if (this.hsluv.l < 0.00000001) {
-			this.lch_l = 0;
-			this.lch_c = 0;
+			this.lch.l = 0;
+			this.lch.c = 0;
 		} else {
-			this.lch_l = this.hsluv.l;
+			this.lch.l = this.hsluv.l;
 			this.calculateBoundingLines(this.hsluv.l);
 			const max = this.calcMaxChromaHsluv(this.hsluv.h);
-			this.lch_c = max / 100 * this.hsluv.s;
+			this.lch.c = max / 100 * this.hsluv.s;
 		}
-		this.lch_h = this.hsluv.h;
+		this.lch.h = this.hsluv.h;
 	}
 
 	lchToHsluv() {
-		if (this.lch_l > 99.9999999) {
+		if (this.lch.l > 99.9999999) {
 			this.hsluv.s = 0;
 			this.hsluv.l = 100;
-		} else if (this.lch_l < 0.00000001) {
+		} else if (this.lch.l < 0.00000001) {
 			this.hsluv.s = 0;
 			this.hsluv.l = 0;
 		} else {
-			this.calculateBoundingLines(this.lch_l);
-			const max = this.calcMaxChromaHsluv(this.lch_h);
-			this.hsluv.s = this.lch_c / max * 100;
-			this.hsluv.l = this.lch_l;
+			this.calculateBoundingLines(this.lch.l);
+			const max = this.calcMaxChromaHsluv(this.lch.h);
+			this.hsluv.s = this.lch.c / max * 100;
+			this.hsluv.l = this.lch.l;
 		}
-		this.hsluv.h = this.lch_h;
+		this.hsluv.h = this.lch.h;
 	}
 
 	hpluvToLch() {
-		if (this.hpluv_l > 99.9999999) {
-			this.lch_l = 100;
-			this.lch_c = 0;
-		} else if (this.hpluv_l < 0.00000001) {
-			this.lch_l = 0;
-			this.lch_c = 0;
+		if (this.hpluv.l > 99.9999999) {
+			this.lch.l = 100;
+			this.lch.c = 0;
+		} else if (this.hpluv.l < 0.00000001) {
+			this.lch.l = 0;
+			this.lch.c = 0;
 		} else {
-			this.lch_l = this.hpluv_l;
-			this.calculateBoundingLines(this.hpluv_l);
+			this.lch.l = this.hpluv.l;
+			this.calculateBoundingLines(this.hpluv.l);
 			const max = this.calcMaxChromaHpluv();
-			this.lch_c = max / 100 * this.hpluv_p;
+			this.lch.c = max / 100 * this.hpluv.p;
 		}
-		this.lch_h = this.hpluv_h;
+		this.lch.h = this.hpluv.h;
 	}
 
 	lchToHpluv() {
-		if (this.lch_l > 99.9999999) {
-			this.hpluv_p = 0;
-			this.hpluv_l = 100;
-		} else if (this.lch_l < 0.00000001) {
-			this.hpluv_p = 0;
-			this.hpluv_l = 0;
+		if (this.lch.l > 99.9999999) {
+			this.hpluv.p = 0;
+			this.hpluv.l = 100;
+		} else if (this.lch.l < 0.00000001) {
+			this.hpluv.p = 0;
+			this.hpluv.l = 0;
 		} else {
-			this.calculateBoundingLines(this.lch_l);
+			this.calculateBoundingLines(this.lch.l);
 			const max = this.calcMaxChromaHpluv();
-			this.hpluv_p = this.lch_c / max * 100;
-			this.hpluv_l = this.lch_l;
+			this.hpluv.p = this.lch.c / max * 100;
+			this.hpluv.l = this.lch.l;
 		}
-		this.hpluv_h = this.lch_h;
+		this.hpluv.h = this.lch.h;
 	}
 
 	hsluvToRgb() {
@@ -319,9 +295,9 @@ export class Hsluv {
 	 */
 	hex(hex) {
 		this._hex = hex.toLowerCase();
-		this.rgb_r = hexToRgbChannel(this._hex, 1);
-		this.rgb_g = hexToRgbChannel(this._hex, 3);
-		this.rgb_b = hexToRgbChannel(this._hex, 5);
+		this.rgb.r = hexToRgbChannel(this._hex, 1);
+		this.rgb.g = hexToRgbChannel(this._hex, 3);
+		this.rgb.b = hexToRgbChannel(this._hex, 5);
 		this._toLuv();
 		return this;
 	}
@@ -336,6 +312,138 @@ export class Hsluv {
 		this.lchToHpluv();
 		this.lchToHsluv();
 	}
+}
+
+export class Lch {
+	/**
+	 * @param {Hsluv} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Hsluv}
+	 */
+	_parent;
+
+	l = 0;
+	c = 0;
+	h = 0;
+}
+
+export class Luv {
+	/**
+	 * @param {Hsluv} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Hsluv}
+	 */
+	_parent;
+
+	l = 0;
+	u = 0;
+	v = 0;
+}
+
+export class Xyz {
+	/**
+	 * @param {Hsluv} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Hsluv}
+	 */
+	_parent;
+
+	x = 0;
+	y = 0;
+	z = 0;
+}
+
+export class Rgb {
+	/**
+	 * @param {Hsluv} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Hsluv}
+	 */
+	_parent;
+
+	r = 0;
+	g = 0;
+	b = 0;
+
+	/**
+	 * @return {number}
+	 */
+	luminance() {
+		const a = [this.r, this.g, this.b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+		return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+	}
+}
+
+export class Rgb24 {
+	/**
+	 * 6 lines in slope-intercept format: R < 0, R > 1, G < 0, G > 1, B < 0, B > 1
+	 * @param {Hsluv} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Hsluv}
+	 */
+	_parent;
+
+	r0s = 0;
+	r0i = 0;
+	r1s = 0;
+	r1i = 0;
+	g0s = 0;
+	g0i = 0;
+	g1s = 0;
+	g1i = 0;
+	b0s = 0;
+	b0i = 0;
+	b1s = 0;
+	b1i = 0;
+}
+
+export class Hpl {
+	/**
+	 * @param {Hsluv} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Hsluv}
+	 */
+	_parent;
+
+	h = 0;
+	p = 0;
+	l = 0;
 }
 
 export class Hsl {
@@ -356,6 +464,26 @@ export class Hsl {
 	h = 0;
 	s = 0;
 	l = 0;
+
+	/**
+	 * @param {?number} h
+	 * @param {?number} s
+	 * @param {?number} l
+	 * @return {Hsl}
+	 */
+	modify(h, s, l) {
+		if (h != null) {
+			this.h += h;
+		}
+		if (s != null) {
+			this.s += s;
+		}
+		if (l != null) {
+			this.l += l;
+		}
+		this.hex();
+		return this;
+	}
 
 	/**
 	 * @type {function(): string}
