@@ -23,6 +23,11 @@ pre {
   font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
+a {
+  text-decoration: none;
+  color: var(--primary);
+}
+
 p {
   margin-bottom: 1rem;
 }

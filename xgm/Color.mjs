@@ -43,13 +43,8 @@ const distanceFromOriginAngle = (slope, intercept, angle) => {
 	}
 };
 
-export class CUtil {
-	/**
-	 * @private
-	 * @type {string}
-	 */
-	_hex = '#000000';
-
+export class Color {
+	/** @type {Hex} */ hex;
 	/** @type {Hsl} */ hsl;
 	/** @type {Hsluv} */ hsluv;
 	/** @type {Hpluv} */ hpluv;
@@ -60,6 +55,7 @@ export class CUtil {
 	/** @type {Lch} */ lch;
 
 	constructor() {
+		this.hex = new Hex(this);
 		this.hsl = new Hsl(this);
 		this.hsluv = new Hsluv(this);
 		this.hpluv = new Hpluv(this);
@@ -137,7 +133,7 @@ export class CUtil {
 		this.lch.h = this.hsluv.h;
 
 		this._export();
-		return this._hex;
+		return this.hex.value;
 	}
 
 	/**
@@ -160,7 +156,7 @@ export class CUtil {
 		this.lch.h = this.hpluv.h;
 
 		this._export();
-		return this._hex;
+		return this.hex.value;
 	}
 
 	/**
@@ -195,22 +191,16 @@ export class CUtil {
 		this._rgb2hsl();
 
 		// rgb -> hex
-		this._hex = "#";
-		this._hex += rgbChannelToHex(this.rgb.r);
-		this._hex += rgbChannelToHex(this.rgb.g);
-		this._hex += rgbChannelToHex(this.rgb.b);
+		this.hex.value = "#";
+		this.hex.value += rgbChannelToHex(this.rgb.r);
+		this.hex.value += rgbChannelToHex(this.rgb.g);
+		this.hex.value += rgbChannelToHex(this.rgb.b);
 	}
 
 	/**
-	 * @param {string} color
-	 * @return {CUtil}
+	 * @return {Color}
 	 */
-	hex(color) {
-		this._hex = color.toLowerCase();
-		this.rgb.r = hexToRgbChannel(this._hex, 1);
-		this.rgb.g = hexToRgbChannel(this._hex, 3);
-		this.rgb.b = hexToRgbChannel(this._hex, 5);
-
+	import() {
 		// rgb -> hsl
 		this._rgb2hsl();
 
@@ -307,7 +297,7 @@ export class CUtil {
 
 export class Lch {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -315,7 +305,7 @@ export class Lch {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -326,7 +316,7 @@ export class Lch {
 
 export class Luv {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -334,7 +324,7 @@ export class Luv {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -345,7 +335,7 @@ export class Luv {
 
 export class Xyz {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -353,7 +343,7 @@ export class Xyz {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -362,9 +352,9 @@ export class Xyz {
 	z = 0;
 }
 
-export class Rgb {
+export class Hex {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -372,7 +362,50 @@ export class Rgb {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
+	 */
+	_parent;
+
+	/**
+	 * @param {string} color
+	 * @return {Color}
+	 */
+	set(color) {
+		this.value = color.toLowerCase();
+		this._parent.rgb.r = hexToRgbChannel(this.value, 1);
+		this._parent.rgb.g = hexToRgbChannel(this.value, 3);
+		this._parent.rgb.b = hexToRgbChannel(this.value, 5);
+		return this._parent.import();
+	}
+
+	/**
+	 * @param {string} color
+	 * @param {number} t
+	 * @return {Color}
+	 */
+	blend(color, t) {
+		const [rA, gA, bA] = this.value.match(/\w\w/g).map(c => parseInt(c, 16));
+		const [rB, gB, bB] = color.match(/\w\w/g).map(c => parseInt(c, 16));
+		const r = Math.round(rA + (rB - rA) * t).toString(16).padStart(2, '0');
+		const g = Math.round(gA + (gB - gA) * t).toString(16).padStart(2, '0');
+		const b = Math.round(bA + (bB - bA) * t).toString(16).padStart(2, '0');
+		return this.set('#' + r + g + b);
+	};
+
+	value = '#000000';
+}
+
+export class Rgb {
+	/**
+	 * @param {Color} parent
+	 */
+	constructor(parent) {
+		this._parent = parent;
+	}
+
+	/**
+	 * @private
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -392,7 +425,7 @@ export class Rgb {
 export class Rgb24 {
 	/**
 	 * 6 lines in slope-intercept format: R < 0, R > 1, G < 0, G > 1, B < 0, B > 1
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -400,7 +433,7 @@ export class Rgb24 {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -420,7 +453,7 @@ export class Rgb24 {
 
 export class Hpluv {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -428,7 +461,7 @@ export class Hpluv {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -439,7 +472,7 @@ export class Hpluv {
 
 export class Hsluv {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -448,7 +481,7 @@ export class Hsluv {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 
@@ -462,7 +495,7 @@ export class Hsluv {
 	 * @param {?number} l
 	 * @return {Hsluv}
 	 */
-	modify(h, s, l) {
+	add(h, s, l) {
 		if (h != null) {
 			this.h += h;
 		}
@@ -484,7 +517,7 @@ export class Hsluv {
 
 export class Hsl {
 	/**
-	 * @param {CUtil} parent
+	 * @param {Color} parent
 	 */
 	constructor(parent) {
 		this._parent = parent;
@@ -492,7 +525,7 @@ export class Hsl {
 
 	/**
 	 * @private
-	 * @type {CUtil}
+	 * @type {Color}
 	 */
 	_parent;
 

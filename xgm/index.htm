@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>XGM</title>
 	<link rel="stylesheet" href="css/main.css">
-	<script src="CUtil.mjs" type="module" defer></script>
+	<script src="Color.mjs" type="module" defer></script>
 	<script src="main.mjs" type="module" defer></script>
 </head>
 <body>
@@ -14,8 +14,14 @@
 		<pre class="background-text"></pre>
 		<input type="color" data-var="background">
 	</div>
-	<p>Кроме обычного текста, нужен цвет  для не особо важного текста, известного в узкиг кругах как "muted".</p>
+	<p>Если следовать <a href="https://m1.material.io/style/color.html#color-usability" target="_blank">гайдам</a>, то оказывается, что есть три вида текста: <b>primary</b>, <b>secondary</b> и <b>disabled</b>. К которым нужно тупо применить прозрачность в зависимости от темы.</p>
+	<p>Но прозрачность плохо сказывается на рэндере, поэтому просто наложим два цвета друг на друга с рекомендуемым коэфициентом для <b>secondary</b>, а <b>disabled</b> в простом тексте мы не используем, <span class="muted">поэтому и не будем дизайнить</span>.</p>
 	<p class="muted">Ублюдок, мать твою, а ну, иди сюда, говно собачье, а? Что, сдуру решил ко мне лезть? Ты, засранец вонючий, мать твою, а? Ну, иди сюда, попробуй меня трахнуть — я тебя сам трахну, ублюдок, онанист чёртов, будь ты проклят! Иди, идиот, трахать тебя и всю твою семью! Говно собачье, жлоб вонючий, дерьмо, сука, падла! Иди сюда, мерзавец, негодяй, гад! Иди сюда, ты, говно, жопа!</p>
+	<div class="mb">
+		<pre class="primary-text"></pre>
+		<input type="color" data-var="primary">
+	</div>
+
 
 	<!--
 	<button type="button" class="button">Это &lt;button&gt;</button>
