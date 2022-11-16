@@ -11,8 +11,6 @@ dark.classList.add('dark');
 light.insertAdjacentElement('afterend', dark);
 
 light.insertAdjacentHTML('afterbegin', '<h1>Светлая тема</h1>');
-light.dataset.light = 1;
-
 dark.insertAdjacentHTML('afterbegin', '<h1>Тёмная тема</h1>');
 
 const containers = [light, dark];
@@ -88,7 +86,7 @@ addEventListener('input', e => {
 	}
 	const container = input.closest('.container');
 
-	setVar(container, input.dataset.var, input.value, container.dataset.light === '1');
+	setVar(container, input.dataset.var, input.value, container.classList.contains('light'));
 });
 
 export {}
