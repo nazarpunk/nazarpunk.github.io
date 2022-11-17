@@ -51,7 +51,7 @@ p {
 }
 
 .muted {
-  color: var(--color-muted);
+  color: var(--colorMuted);
 }
 
 .mb {
@@ -67,6 +67,7 @@ p {
   margin: 0;
   padding: 0.3rem 0.6rem;
   text-align: center;
+  color: var(--color);
   border: 0;
   background-color: red;
 }

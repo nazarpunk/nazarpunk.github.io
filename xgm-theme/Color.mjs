@@ -174,13 +174,13 @@ export class Color {
 			this.xyz.x = 0;
 			this.xyz.y = 0;
 			this.xyz.z = 0;
-			return;
+		} else {
+			const varU = this.luv.u / (13 * this.luv.l) + refU;
+			const varV = this.luv.v / (13 * this.luv.l) + refV;
+			this.xyz.y = lToY(this.luv.l);
+			this.xyz.x = 0 - 9 * this.xyz.y * varU / ((varU - 4) * varV - varU * varV);
+			this.xyz.z = (9 * this.xyz.y - 15 * varV * this.xyz.y - varV * this.xyz.x) / (3 * varV);
 		}
-		const varU = this.luv.u / (13 * this.luv.l) + refU;
-		const varV = this.luv.v / (13 * this.luv.l) + refV;
-		this.xyz.y = lToY(this.luv.l);
-		this.xyz.x = 0 - 9 * this.xyz.y * varU / ((varU - 4) * varV - varU * varV);
-		this.xyz.z = (9 * this.xyz.y - 15 * varV * this.xyz.y - varV * this.xyz.x) / (3 * varV);
 
 		// xyz -> rgb
 		this.rgb.r = fromLinear(m_r0 * this.xyz.x + m_r1 * this.xyz.y + m_r2 * this.xyz.z);
@@ -488,6 +488,26 @@ export class Hsluv {
 	h = 0;
 	s = 0;
 	l = 0;
+
+	/**
+	 * @param {?number} h
+	 * @param {?number} s
+	 * @param {?number} l
+	 * @return {Hsluv}
+	 */
+	set(h, s, l) {
+		if (h != null) {
+			this.h = h;
+		}
+		if (s != null) {
+			this.s = s;
+		}
+		if (l != null) {
+			this.l = l;
+		}
+		this.hex();
+		return this;
+	}
 
 	/**
 	 * @param {?number} h

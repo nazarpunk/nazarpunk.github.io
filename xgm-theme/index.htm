@@ -5,12 +5,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>XGM</title>
 	<link rel="stylesheet" href="css/main.css">
+	<script src="colour.mjs" type="module" defer></script>
 	<script src="Color.mjs" type="module" defer></script>
 	<script src="main.mjs" type="module" defer></script>
 </head>
 <body>
 <div class="layout">
 	<div class="container">
+		<p><a href="https://m2.material.io/design/color/the-color-system.html#color-theme-creation">Material Color System</a> вообще не говорит, как дизайнить ссылки.</p>
 		<div class="mb">
 			<pre class="background-text"></pre>
 			<input type="color" data-var="background">
@@ -22,15 +24,15 @@
 			<pre class="primary-text"></pre>
 			<input type="color" data-var="primary">
 		</div>
-
-
-		<!--
-		<button type="button" class="button">Это &lt;button&gt;</button>
+<!--
+		<button type="button" class="button mb">Это &lt;button&gt;</button>
 		💋
-		<a class="button">Это &lt;a&gt;</a>
+		<a class="button mb">Это &lt;a&gt;</a>
 		💀
-		<div class="button d-ib">Это &lt;div&gt;</div>
-		-->
+		<div class="button mb">Это &lt;div&gt;</div>
+		👻
+		<input class="button mb" type="button" value="Это &lt;input[type=button]&gt;">
+-->
 	</div>
 </div>
 </body>
