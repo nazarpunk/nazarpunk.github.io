@@ -79,10 +79,6 @@ const setVar = (name, value, i) => {
 
 	containers[i].classList.toggle('link-underline', de <= 15);
 
-	if (de <= 15) {
-		//primary.hex.set(color.hex.value).hsluv.add(1,null,null);
-	}
-
 	// update
 	update(i);
 	containers[i].style.setProperty(`--primary`, primary.hex.value);
