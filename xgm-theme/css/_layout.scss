@@ -21,6 +21,10 @@ pre {
 a {
 	text-decoration: none;
 	color: var(--primary);
+
+	.link-underline & {
+		text-decoration: underline;
+	}
 }
 
 p {

@@ -76,6 +76,9 @@ const setVar = (name, value, i) => {
 	const c2 = Colour.hex2lab(primary.hex.value);
 	const de = Colour.deltaE00(...c1, ...c2);
 	primaryText.innerHTML += `<br>CIEDE2000: ${de.toFixed(3)}`;
+
+	containers[i].classList.toggle('link-underline', de <= 15);
+
 	if (de <= 15) {
 		//primary.hex.set(color.hex.value).hsluv.add(1,null,null);
 	}
