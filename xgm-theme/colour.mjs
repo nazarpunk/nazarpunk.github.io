@@ -173,15 +173,13 @@ export class Colour {
 	 * @param {[Number]} z Value
 	 */
 	static xyz2lab(x, y, z) {
-		// using 10o Observer (CIE 1964)
-		// CIE10_D65 = {94.811f, 100f, 107.304f} => Daylight
-		const referenceX = 94.811;
-		const referenceY = 100;
-		const referenceZ = 107.304;
+		const rx = 94.811;
+		const ry = 100;
+		const rz = 107.304;
 		// step 1
-		x = x / referenceX;
-		y = y / referenceY;
-		z = z / referenceZ;
+		x = x / rx;
+		y = y / ry;
+		z = z / rz;
 		// step 2
 		if (x > 0.008856) {
 			x = Math.pow(x, 1 / 3);
@@ -318,33 +316,5 @@ export class Colour {
 		const kh = 1;
 
 		return Math.sqrt(Math.pow(deltalp / (kl * sl), 2) + Math.pow(deltacp / (kc * sc), 2) + Math.pow(deltahp / (kh * sh), 2) + rt * (deltacp / (kc * sc)) * (deltahp / (kh * sh)));
-	}
-	/**
-	 * Get darker colour of the given colour
-	 * @param {[Number]} r     Red value from 0 to 255
-	 * @param {[Number]} g     Green value from 0 to 255
-	 * @param {[Number]} b     Blue value from 0 to 255
-	 */
-	static getDarkerColour(r, g, b, a = 1, darkenPercentage = 0.05) {
-		let [l1, a1, b1] = Colour.rgba2lab(r, g, b, a);
-		l1 -= l1 * darkenPercentage;
-		if (l1 < 0) {
-			l1 = 0;
-		}
-		return Colour.lab2rgba(l1, a1, b1); // [R, G, B, A]
-	}
-	/**
-	 * Get brighter colour of the given colour
-	 * @param {[Number]} r     Red value from 0 to 255
-	 * @param {[Number]} g     Green value from 0 to 255
-	 * @param {[Number]} b     Blue value from 0 to 255
-	 */
-	static getBrighterColour(r, g, b, a = 1, brighterPercentage = 0.05) {
-		let [l1, a1, b1] = Colour.rgba2lab(r, g, b, a);
-		l1 += l1 * brighterPercentage;
-		if (l1 > 100) {
-			l1 = 100;
-		}
-		return Colour.lab2rgba(l1, a1, b1); // [R, G, B, A]
 	}
 }

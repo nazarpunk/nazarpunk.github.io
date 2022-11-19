@@ -39,17 +39,18 @@ const update = i => {
  * @return {String}
  * @private
  */
-const _s = (l, c) => `${l} ${c.hsluv.hex()} | lum: ${c.rgb.luminance().toFixed(3)} | HSLuv: ${c.hsluv.h.toFixed(3)}, ${c.hsluv.s.toFixed(3)}, ${c.hsluv.l.toFixed(3)}`;
+const _s = (l, c) => `${l} ${c.hex.value} | lum: ${c.rgb.luminance().toFixed(3)} | HSLuv: ${c.hsluv.h.toFixed(3)}, ${c.hsluv.s.toFixed(3)}, ${c.hsluv.l.toFixed(3)}`;
 
 const setVar = (name, value, i) => {
 	theme[name][i] = (new Color()).hex.set(value).hex.value;
 
 	// background
-	const background = (new Color()).hex.set(theme.background[i]);
+	const background = Color.fromHex(theme.background[i]);
 	const backgroundText = containers[i].querySelector(`.background-text`);
 
-	const color = (new Color()).hex.set(background.hex.value);
-	color.hsluv.add(null, null, background.hsluv.l > 50 ? -50 : 50);
+	const color = Color
+		.fromHex(background.hex.value)
+		.hsluv.add(null, null, background.hsluv.l > 50 ? -50 : 50);
 
 	backgroundText.innerHTML = _s('&nbsp;&nbsp;Фон:', background);
 	backgroundText.innerHTML += _s('<br>Текст:', color);
@@ -60,16 +61,17 @@ const setVar = (name, value, i) => {
 	backgroundText.innerHTML += `<br>Contrast ratio: ${cr.toFixed(3)}`;
 
 	// colorMuted
-	const colorMuted = (new Color()).hex.set(background.hex.value);
+	const colorMuted = Color.fromHex(background.hex.value);
 	colorMuted.hex.blend(color.hex.value, i ? .7 : .54);
 	backgroundText.innerHTML += _s('<br>Muted:', colorMuted);
-	theme.colorMuted[i] = colorMuted.hsluv.hex();
+	theme.colorMuted[i] = colorMuted.hex.value;
 
 	// primary
-	const primary = (new Color()).hex.set(theme.primary[i]);
-	const primaryText = containers[i].querySelector(`.primary-text`);
-	primary.hsluv.set(null, null, color.hsluv.l);
+	const primary = Color
+		.fromHex(theme.primary[i])
+		.hsluv.set(null, null, color.hsluv.l);
 
+	const primaryText = containers[i].querySelector(`.primary-text`);
 	primaryText.innerHTML = _s('Primary:', primary);
 
 	const c1 = Colour.hex2lab(color.hex.value);
@@ -77,7 +79,7 @@ const setVar = (name, value, i) => {
 	const de = Colour.deltaE00(...c1, ...c2);
 	primaryText.innerHTML += `<br>CIEDE2000: ${de.toFixed(3)}`;
 
-	containers[i].classList.toggle('link-underline', de <= 15);
+	containers[i].classList.toggle('link-underline', de <= 17);
 
 	// update
 	update(i);
