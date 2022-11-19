@@ -1,23 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
 
-const refY = 1.0;
-const refU = 0.19783000664283;
-const refV = 0.46831999493879;
-const kappa = 903.2962962;
-const epsilon = 0.0088564516;
-
-function toLinear(c) {
-	return c > 0.04045 ? Math.pow((c + 0.055) / 1.055, 2.4) : c / 12.92;
-}
-
-function yToL(Y) {
-	return Y <= epsilon ? Y / refY * kappa : 116 * Math.pow(Y / refY, 1 / 3) - 16;
-}
-
-function lToY(L) {
-	return L <= 8 ? refY * L / kappa : refY * Math.pow((L + 16) / 116, 3);
-}
-
 export class Color {
 	/** @type {Hex} */ hex;
 	/** @type {Hsl} */ hsl;
@@ -143,6 +125,12 @@ export class Luv {
 	u = 0;
 	v = 0;
 
+	static refY = 1.0;
+	static refU = 0.19783000664283;
+	static refV = 0.46831999493879;
+	static kappa = 903.2962962;
+	static epsilon = 0.0088564516;
+
 	/**
 	 * @return {Color}
 	 */
@@ -165,6 +153,22 @@ export class Luv {
 	}
 
 	/**
+	 * @param {number} L
+	 * @return {number}
+	 */
+	static lToY(L) {
+		return L <= 8 ? Luv.refY * L / Luv.kappa : Luv.refY * Math.pow((L + 16) / 116, 3);
+	}
+
+	/**
+	 * @param {number} Y
+	 * @return {number}
+	 */
+	static yToL(Y) {
+		return Y <= Luv.epsilon ? Y / Luv.refY * Luv.kappa : 116 * Math.pow(Y / Luv.refY, 1 / 3) - 16;
+	}
+
+	/**
 	 * @return {Color}
 	 */
 	toXyz() {
@@ -175,9 +179,9 @@ export class Luv {
 			xyz.y = 0;
 			xyz.z = 0;
 		} else {
-			const varU = this.u / (13 * this.l) + refU;
-			const varV = this.v / (13 * this.l) + refV;
-			xyz.y = lToY(this.l);
+			const varU = this.u / (13 * this.l) + Luv.refU;
+			const varV = this.v / (13 * this.l) + Luv.refV;
+			xyz.y = Luv.lToY(this.l);
 			xyz.x = 0 - 9 * xyz.y * varU / ((varU - 4) * varV - varU * varV);
 			xyz.z = (9 * xyz.y - 15 * varV * xyz.y - varV * xyz.x) / (3 * varV);
 		}
@@ -219,13 +223,13 @@ export class Xyz {
 			varU = NaN;
 			varV = NaN;
 		}
-		luv.l = yToL(this.y);
+		luv.l = Luv.yToL(this.y);
 		if (luv.l === 0) {
 			luv.u = 0;
 			luv.v = 0;
 		} else {
-			luv.u = 13 * luv.l * (varU - refU);
-			luv.v = 13 * luv.l * (varV - refV);
+			luv.u = 13 * luv.l * (varU - Luv.refU);
+			luv.v = 13 * luv.l * (varV - Luv.refV);
 		}
 
 		return this._color;
@@ -283,17 +287,31 @@ export class Hex {
 	};
 
 	/**
+	 * @return {Color}
+	 */
+	toRgb() {
+		const rgb = this._color.rgb;
+
+		rgb.r = Hex.channelToRgb(this.value, 1);
+		rgb.g = Hex.channelToRgb(this.value, 3);
+		rgb.b = Hex.channelToRgb(this.value, 5);
+
+		return rgb
+			.toHsl()
+			.rgb.toXyz()
+			.xyz.toLuv()
+			.luv.toLch()
+			.lch.toHpluv()
+			.lch.toHsluv();
+	}
+
+	/**
 	 * @param {string} color
 	 * @return {Color}
 	 */
 	set(color) {
 		this.value = color.toLowerCase();
-
-		const r = Hex.channelToRgb(this.value, 1);
-		const g = Hex.channelToRgb(this.value, 3);
-		const b = Hex.channelToRgb(this.value, 5);
-
-		return this._color.rgb.set(r, g, b);
+		return this.toRgb();
 	}
 
 	/**
@@ -341,7 +359,8 @@ export class Rgb {
 		this.b = b;
 
 		return this
-			.toHsl()
+			.toHex()
+			.rgb.toHsl()
 			.rgb.toXyz()
 			.xyz.toLuv()
 			.luv.toLch()
@@ -373,12 +392,20 @@ export class Rgb {
 	}
 
 	/**
+	 * @param {number} c
+	 * @return {number}
+	 */
+	static toLinear(c) {
+		return c > 0.04045 ? Math.pow((c + 0.055) / 1.055, 2.4) : c / 12.92;
+	}
+
+	/**
 	 * @return {Color}
 	 */
 	toXyz() {
-		const lr = toLinear(this.r);
-		const lg = toLinear(this.g);
-		const lb = toLinear(this.b);
+		const lr = Rgb.toLinear(this.r);
+		const lg = Rgb.toLinear(this.g);
+		const lb = Rgb.toLinear(this.b);
 
 		const xyz = this._color.xyz;
 
@@ -464,7 +491,7 @@ export class Rgb24 {
 	 */
 	calcBoundingLines(l) {
 		const sub1 = Math.pow(l + 16, 3) / 1560896;
-		const sub2 = sub1 > epsilon ? sub1 : l / kappa;
+		const sub2 = sub1 > Luv.epsilon ? sub1 : l / Luv.kappa;
 		const s1r = sub2 * (284517 * Rgb24.m_r0 - 94839 * Rgb24.m_r2);
 		const s2r = sub2 * (838422 * Rgb24.m_r2 + 769860 * Rgb24.m_r1 + 731718 * Rgb24.m_r0);
 		const s3r = sub2 * (632260 * Rgb24.m_r2 - 126452 * Rgb24.m_r1);
