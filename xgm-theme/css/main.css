@@ -25,9 +25,9 @@ pre {
 
 a {
   text-decoration: none;
-  color: var(--primary);
+  color: var(--linkColor);
 }
-.link-underline a {
+.link-underline a:not(.button) {
   text-decoration: underline;
 }
 
@@ -58,7 +58,7 @@ p {
 }
 
 .mb {
-  margin-bottom: 1rem;
+  margin-bottom: 1rem !important;
 }
 
 .button {
@@ -68,14 +68,31 @@ p {
   display: inline-block;
   box-sizing: border-box;
   margin: 0;
-  padding: 0.3rem 0.6rem;
+  padding: 0.4rem 0.6rem;
   text-align: center;
-  color: var(--color);
+  color: var(--button-color, var(--color));
   border: 0;
-  background-color: red;
+  border-radius: 3px;
+  background-color: var(--button-bg, transparent);
+  text-shadow: none;
 }
 .button:hover {
   cursor: pointer;
+}
+
+.button-primary {
+  --button-color: var(--buttonPrimaryColor);
+  --button-bg: var(--buttonPrimaryBg);
+}
+
+.button-info {
+  --button-color: var(--buttonInfoColor);
+  --button-bg: var(--buttonInfoBg);
+}
+
+.button-danger {
+  --button-color: var(--buttonDangerColor);
+  --button-bg: var(--buttonDangerBg);
 }
 
 /*# sourceMappingURL=main.css.map */

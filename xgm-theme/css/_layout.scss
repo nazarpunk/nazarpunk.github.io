@@ -20,9 +20,9 @@ pre {
 
 a {
 	text-decoration: none;
-	color: var(--primary);
+	color: var(--linkColor);
 
-	.link-underline & {
+	.link-underline &:not(.button) {
 		text-decoration: underline;
 	}
 }

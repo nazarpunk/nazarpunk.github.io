@@ -1,4 +1,3 @@
-import {Colour} from "./colour.mjs";
 import {Color} from "./Color.mjs";
 
 const light = document.querySelector('.container');
@@ -22,6 +21,15 @@ const theme = {
 	color: [],
 	colorMuted: [],
 	primary: ['#4d4da1', '#aaaa77'],
+	info: ['#0088cc', '#ffbb33'],
+	danger: ['#ff006a', '#c51943'],
+	linkColor: [],
+	buttonPrimaryBg: [],
+	buttonPrimaryColor: [],
+	buttonInfoBg: [],
+	buttonInfoColor: [],
+	buttonDangerBg: [],
+	buttonDangerColor: [],
 };
 
 const getContrastRatio = (a, b) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
@@ -67,23 +75,42 @@ const setVar = (name, value, i) => {
 	theme.colorMuted[i] = colorMuted.hex.value;
 
 	// primary
-	const primary = Color
-		.fromHex(theme.primary[i])
-		.hsluv.set(null, null, color.hsluv.l);
+	const primary = Color.fromHex(theme.primary[i]);
 
-	const primaryText = containers[i].querySelector(`.primary-text`);
-	primaryText.innerHTML = _s('Primary:', primary);
+	// link color
+	const linkColor = Color.fromHex(primary.hex.value).hsluv.set(null, null, color.hsluv.l);
+	theme.linkColor[i] = linkColor.hex.value;
 
-	const c1 = Colour.hex2lab(color.hex.value);
-	const c2 = Colour.hex2lab(primary.hex.value);
-	const de = Colour.deltaE00(...c1, ...c2);
-	primaryText.innerHTML += `<br>CIEDE2000: ${de.toFixed(3)}`;
+	const linkColorText = containers[i].querySelector(`.link-color-text`);
+	linkColorText.innerHTML = _s('Цвет ссылок:', linkColor);
 
+	const de = color.lab.deltaE00(linkColor);
+	linkColorText.innerHTML += `<br>CIEDE2000: ${de.toFixed(3)}`;
 	containers[i].classList.toggle('link-underline', de <= 17);
+
+	// button primary
+	theme.buttonPrimaryBg[i] = primary.hex.value;
+	const buttonPrimaryColor = Color.fromHex(primary.hex.value)
+		.hsluv.add(null, null, primary.hsluv.l > 50 ? -50 : 50);
+	theme.buttonPrimaryColor[i] = buttonPrimaryColor.hex.value;
+
+	// button info
+	const info = Color.fromHex(theme.info[i]);
+
+	theme.buttonInfoBg[i] = info.hex.value;
+	const buttonInfoColor = Color.fromHex(theme.buttonInfoBg[i])
+		.hsluv.add(null, null, info.hsluv.l > 50 ? -50 : 50);
+	theme.buttonInfoColor[i] = buttonInfoColor.hex.value;
+
+	// button danger
+	const danger = Color.fromHex(theme.danger[i]);
+	theme.buttonDangerBg[i] = danger.hex.value;
+	const buttonDangerColor = Color.fromHex(theme.buttonDangerBg[i])
+		.hsluv.add(null, null, danger.hsluv.l > 50 ? -50 : 50);
+	theme.buttonDangerColor[i] = buttonDangerColor.hex.value;
 
 	// update
 	update(i);
-	containers[i].style.setProperty(`--primary`, primary.hex.value);
 };
 
 for (let i = 0; i < 2; i++) {
