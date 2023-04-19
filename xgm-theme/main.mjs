@@ -1,28 +1,19 @@
-import {Color} from "./Color.mjs";
+import {Color} from './Color.mjs';
 
-const light = document.querySelector('.container');
+/** @type {number} is dark theme */
+let d;
 
-/** @type {HTMLElement} */
-const dark = light.cloneNode(true);
-
-light.classList.add('light');
-dark.classList.add('dark');
-
-light.insertAdjacentElement('afterend', dark);
-
-light.insertAdjacentHTML('afterbegin', '<h1>Светлая тема</h1>');
-dark.insertAdjacentHTML('afterbegin', '<h1>Тёмная тема</h1>');
-
-const containers = [light, dark];
-
-const theme = {
+const colors = {
 	background: ['#ececec', '#242424'],
-	//background: ['#ececec', '#ee2b2b'],
-	color: [],
-	colorMuted: [],
 	primary: ['#4d4da1', '#aaaa77'],
 	info: ['#0088cc', '#ffbb33'],
 	danger: ['#ff006a', '#c51943'],
+};
+
+const variables = {
+	background: [],
+	color: [],
+	colorMuted: [],
 	linkColor: [],
 	buttonPrimaryBg: [],
 	buttonPrimaryColor: [],
@@ -32,110 +23,104 @@ const theme = {
 	buttonDangerColor: [],
 };
 
-const getContrastRatio = (a, b) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+const setVariables = () => {
+	// background
+	const background = Color.fromHex(colors.background[d]);
+	variables.background[d] = background.hex.value;
 
-/** @param {number} i */
-const update = i => {
-	for (let [k, v] of Object.entries(theme)) {
-		containers[i].style.setProperty(`--${k}`, v[i]);
+	// color
+	const color = Color
+	.fromHex(background.hex.value)
+	.hsluv.add(null, null, background.hsluv.l > 50 ? -50 : 50);
+	variables.color[d] = color.hex.value;
+
+	// colorMuted
+	const colorMuted = Color.fromHex(background.hex.value);
+	colorMuted.hex.blend(color.hex.value, d ? .7 : .54);
+	variables.colorMuted[d] = colorMuted.hex.value;
+
+	if (0) {
+
+
+		// primary
+		const primary = Color.fromHex(variables.primary[d]);
+
+		// link color
+		const linkColor = Color.fromHex(primary.hex.value).hsluv.set(null, null, color.hsluv.l);
+		variables.linkColor[d] = linkColor.hex.value;
+
+		const de = color.lab.deltaE00(linkColor);
+		document.body.classList.toggle('link-underline', de <= 17);
+
+		// button primary
+		variables.buttonPrimaryBg[d] = primary.hex.value;
+		const buttonPrimaryColor = Color.fromHex(primary.hex.value)
+		.hsluv.add(null, null, primary.hsluv.l > 50 ? -50 : 50);
+		variables.buttonPrimaryColor[d] = buttonPrimaryColor.hex.value;
+
+		// button info
+		const info = Color.fromHex(variables.info[d]);
+
+		variables.buttonInfoBg[d] = info.hex.value;
+		const buttonInfoColor = Color.fromHex(variables.buttonInfoBg[d])
+		.hsluv.add(null, null, info.hsluv.l > 50 ? -50 : 50);
+		variables.buttonInfoColor[d] = buttonInfoColor.hex.value;
+
+		// button danger
+		const danger = Color.fromHex(variables.danger[d]);
+		variables.buttonDangerBg[d] = danger.hex.value;
+		const buttonDangerColor = Color.fromHex(variables.buttonDangerBg[d])
+		.hsluv.add(null, null, danger.hsluv.l > 50 ? -50 : 50);
+		variables.buttonDangerColor[d] = buttonDangerColor.hex.value;
+	}
+
+	// update
+	for (let [k, v] of Object.entries(variables)) {
+		document.body.style.setProperty(`--${k}`, v[d]);
 	}
 };
 
 /**
- * @param {string} l
- * @param {Color} c
- * @return {String}
- * @private
+ * @type {HTMLInputElement}
  */
-const _s = (l, c) => `${l} ${c.hex.value} | lum: ${c.rgb.luminance().toFixed(3)} | HSLuv: ${c.hsluv.h.toFixed(3)}, ${c.hsluv.s.toFixed(3)}, ${c.hsluv.l.toFixed(3)}`;
+const themeInput = document.querySelector('.theme-input');
 
-const setVar = (name, value, i) => {
-	theme[name][i] = (new Color()).hex.set(value).hex.value;
+const inputs = document.querySelector('.inputs');
 
-	// background
-	const background = Color.fromHex(theme.background[i]);
-	const backgroundText = containers[i].querySelector(`.background-text`);
+const setTheme = () => {
+	d = themeInput.checked ? 1 : 0;
 
-	const color = Color
-		.fromHex(background.hex.value)
-		.hsluv.add(null, null, background.hsluv.l > 50 ? -50 : 50);
-
-	backgroundText.innerHTML = _s('&nbsp;&nbsp;Фон:', background);
-	backgroundText.innerHTML += _s('<br>Текст:', color);
-
-	// color
-	theme.color[i] = color.hex.value;
-	const cr = getContrastRatio(background.rgb.luminance(), color.rgb.luminance());
-	backgroundText.innerHTML += `<br>Contrast ratio: ${cr.toFixed(3)}`;
-
-	// colorMuted
-	const colorMuted = Color.fromHex(background.hex.value);
-	colorMuted.hex.blend(color.hex.value, i ? .7 : .54);
-	backgroundText.innerHTML += _s('<br>Muted:', colorMuted);
-	theme.colorMuted[i] = colorMuted.hex.value;
-
-	// primary
-	const primary = Color.fromHex(theme.primary[i]);
-
-	// link color
-	const linkColor = Color.fromHex(primary.hex.value).hsluv.set(null, null, color.hsluv.l);
-	theme.linkColor[i] = linkColor.hex.value;
-
-	const linkColorText = containers[i].querySelector(`.link-color-text`);
-	linkColorText.innerHTML = _s('Цвет ссылок:', linkColor);
-
-	const de = color.lab.deltaE00(linkColor);
-	linkColorText.innerHTML += `<br>CIEDE2000: ${de.toFixed(3)}`;
-	containers[i].classList.toggle('link-underline', de <= 17);
-
-	// button primary
-	theme.buttonPrimaryBg[i] = primary.hex.value;
-	const buttonPrimaryColor = Color.fromHex(primary.hex.value)
-		.hsluv.add(null, null, primary.hsluv.l > 50 ? -50 : 50);
-	theme.buttonPrimaryColor[i] = buttonPrimaryColor.hex.value;
-
-	// button info
-	const info = Color.fromHex(theme.info[i]);
-
-	theme.buttonInfoBg[i] = info.hex.value;
-	const buttonInfoColor = Color.fromHex(theme.buttonInfoBg[i])
-		.hsluv.add(null, null, info.hsluv.l > 50 ? -50 : 50);
-	theme.buttonInfoColor[i] = buttonInfoColor.hex.value;
-
-	// button danger
-	const danger = Color.fromHex(theme.danger[i]);
-	theme.buttonDangerBg[i] = danger.hex.value;
-	const buttonDangerColor = Color.fromHex(theme.buttonDangerBg[i])
-		.hsluv.add(null, null, danger.hsluv.l > 50 ? -50 : 50);
-	theme.buttonDangerColor[i] = buttonDangerColor.hex.value;
-
-	// update
-	update(i);
-};
-
-for (let i = 0; i < 2; i++) {
-	for (let [k, v] of Object.entries(theme)) {
+	for (let [k, v] of Object.entries(colors)) {
 		if (v.length !== 2) {
 			continue;
 		}
-		const container = containers[i];
-
-		setVar(k, v[i], i);
 		/** @type {HTMLInputElement} */
-		const input = container.querySelector(`[data-var='${k}']`);
-		input && (input.value = v[i]);
+		const input = document.body.querySelector(`[data-var='${k}']`);
+		input && (input.value = v[d]);
 	}
-}
 
-addEventListener('input', e => {
-	/** @type {HTMLInputElement} */
-	const input = e.target;
-	if (input.type !== 'color' || !input.dataset.var) {
-		return;
+	inputs.textContent = '';
+	for (let [k, v] of Object.entries(colors)) {
+		const div = document.createElement('div');
+		div.classList.add('color-label');
+		inputs.appendChild(div);
+
+		const input = document.createElement('input');
+		input.type = 'color';
+		input.value = v[d];
+		div.appendChild(input);
+		div.insertAdjacentHTML('beforeend', `<div>${k}</div>`);
+
+		input.addEventListener('input', () => {
+			colors[k][d] = input.value;
+			setVariables();
+		});
 	}
-	const container = input.closest('.container');
 
-	setVar(input.dataset.var, input.value, container.classList.contains('light') ? 0 : 1);
-});
+	setVariables();
+};
+
+themeInput.addEventListener('change', setTheme);
+setTheme();
 
 export {}

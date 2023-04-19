@@ -32,6 +32,13 @@ export class Color {
 	static fromHex(color) {
 		return (new Color()).hex.set(color);
 	}
+
+	/**
+	 * @param {number} a
+	 * @param {number} b
+	 * @return {number}
+	 */
+	static contrastRatio = (a, b) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05)
 }
 
 
@@ -322,13 +329,13 @@ export class Hex {
 		rgb.b = Hex.channelToRgb(this.value, 5);
 
 		return rgb
-			.toHsl()
-			.rgb.toXyz()
-			.xyz.toLab()
-			.xyz.toLuv()
-			.luv.toLch()
-			.lch.toHpluv()
-			.lch.toHsluv();
+		.toHsl()
+		.rgb.toXyz()
+		.xyz.toLab()
+		.xyz.toLuv()
+		.luv.toLch()
+		.lch.toHpluv()
+		.lch.toHsluv();
 	}
 
 	/**
@@ -385,14 +392,14 @@ export class Rgb {
 		this.b = b;
 
 		return this
-			.toHex()
-			.rgb.toHsl()
-			.rgb.toXyz()
-			.xyz.toLab()
-			.xyz.toLuv()
-			.luv.toLch()
-			.lch.toHpluv()
-			.lch.toHsluv();
+		.toHex()
+		.rgb.toHsl()
+		.rgb.toXyz()
+		.xyz.toLab()
+		.xyz.toLuv()
+		.luv.toLch()
+		.lch.toHpluv()
+		.lch.toHsluv();
 	}
 
 	/**
@@ -608,13 +615,13 @@ export class Hpluv {
 	 */
 	toHex() {
 		return this
-			.toLch()
-			.lch.toLuv()
-			.luv.toXyz()
-			.xyz.toRgb()
-			.xyz.toLab()
-			.rgb.toHsl()
-			.rgb.toHex();
+		.toLch()
+		.lch.toLuv()
+		.luv.toXyz()
+		.xyz.toRgb()
+		.xyz.toLab()
+		.rgb.toHsl()
+		.rgb.toHex();
 	}
 }
 
@@ -728,13 +735,13 @@ export class Hsluv {
 	 */
 	toHex() {
 		return this
-			.toLch()
-			.lch.toLuv()
-			.luv.toXyz()
-			.xyz.toRgb()
-			.xyz.toLab()
-			.rgb.toHsl()
-			.rgb.toHex();
+		.toLch()
+		.lch.toLuv()
+		.luv.toXyz()
+		.xyz.toRgb()
+		.xyz.toLab()
+		.rgb.toHsl()
+		.rgb.toHex();
 	}
 
 }
